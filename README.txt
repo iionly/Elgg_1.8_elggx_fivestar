@@ -1,6 +1,6 @@
 Elggx Fivestar plugin for Elgg 1.8
-Latest Version: 1.8.1
-Released: 2012-02-12
+Latest Version: 1.8.2
+Released: 2012-06-09
 Contact: iionly@gmx.de
 License: GNU General Public License version 2
 Copyright: (c) iionly (for Elgg 1.8 version), Billy Gunn
@@ -12,7 +12,7 @@ This plugin will add a voting widget to certain views on your site, for example 
 
 Installation:
 
-1. Copy the elggx_fovestar folder into the mod directory of your Elgg installation,
+1. Copy the elggx_fivestar folder into the mod directory of your Elgg installation,
 2. Enable the plugin in the admin section of your site,
 3. Configure then the plugin settings (section "Administer" - "Utilities" - "Elggx Fivestar"). At least it's necessary to add the rating widget to some views for the Elggx Fivestar plugin being useable. Via the plugin settings you can add the rating widget to some pre-defined default views. In the following is described in detail how the configuration of the rating widget for more views works in detail.
 
@@ -57,9 +57,14 @@ In this case the default css layout of the voting widget is used. Still, you mus
 
 Changelog:
 
+1.8.2:
+
+- French translation added (thank to emanwebdev),
+- German translation added.
+
 1.8.1 (by iionly):
 
--Adding/removing views via the plugin settings page should work now.
+- Adding/removing views via the plugin settings page should work now.
 (It was necessary to move the plugin settings to the "Administer" - "Utilities" section as the Elgg core save button added automatically on pages in the "Configure" - "Settings" section failed to keep the content of the views array. When upgrading please remove the old Elggx Fivestar folder before copying the files of the new version on your server.)
 
 
