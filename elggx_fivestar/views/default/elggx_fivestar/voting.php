@@ -15,7 +15,7 @@
                 // Display message to the user at the begining of request
                 $("#fivestar-messages-"+id).text("<?php echo elgg_echo('saving'); ?>").stop().css("opacity", 1).fadeIn(30);
 
-                $.post("<?php echo $vars['url']; ?>action/elggx_fivestar/rate", {id: id, vote: value, __elgg_token: token, __elgg_ts: ts}, function(db)
+                $.post("<?php echo elgg_get_site_url(); ?>action/elggx_fivestar/rate", {id: id, vote: value, __elgg_token: token, __elgg_ts: ts}, function(db)
                 {
                     // Select stars from "Average rating" control to match the returned average rating value
                     $("#fivestar-form-"+id).stars("select", Math.round(db.rating));
@@ -82,7 +82,7 @@ $ratingText = $vars['ratingTextClass'] ? 'class="' . $vars['ratingTextClass'] . 
 ?>
 
 <div <?php echo $outerId; ?> class="fivestar-ratings-<?php echo $guid . $subclass; ?>">
-    <form id="fivestar-form-<?php echo $guid; ?>" style="width: 200px" action="<?php echo $vars['url']; ?>action/elggx_fivestar/rate" method="post">
+    <form id="fivestar-form-<?php echo $guid; ?>" style="width: 200px" action="<?php echo elgg_get_site_url(); ?>action/elggx_fivestar/rate" method="post">
         <?php for ($i = 1; $i <= $stars; $i++) { ?>
             <?php if (round($rating['rating']) == $i) { $checked = 'checked="checked"'; } ?>
                 <input type="radio" name="rate_avg" <?php echo $checked; ?> <?php echo $disabled; ?> value="<?php echo $pps * $i; ?>" />
@@ -93,13 +93,13 @@ $ratingText = $vars['ratingTextClass'] ? 'class="' . $vars['ratingTextClass'] . 
             <input type="hidden" name="__elgg_ts" value="<?php echo $ts; ?>" />
             <input type="submit" value="Rate it!" />
     </form>
-
-    <?php if (!$vars['min']): ?>
-        <br />
+    <div class="clearfloat">
+    <?php if (!$vars['min']) { ?>
         <p <?php echo $ratingText; ?>>
-            <span id="fivestar-rating-<?php echo $guid; ?>"><?php echo $rating['rating']; ?></span>/<?php echo $stars; ?> stars (<span id="fivestar-votes-<?php echo $guid; ?>"><?php echo $rating['votes']; ?></span> votes)
+            <span id="fivestar-rating-<?php echo $guid; ?>"><?php echo $rating['rating']; ?></span>/<?php echo $stars . ' ' . elgg_echo('elggx_fivestar:lowerstars'); ?> (<span id="fivestar-votes-<?php echo $guid; ?>"><?php echo $rating['votes'] . ' ' . elgg_echo('elggx_fivestar:votes'); ?></span>)
         </p>
-    <?php endif; ?>
+    <?php } ?>
+    </div>
 </div>
 
 <script type="text/javascript">

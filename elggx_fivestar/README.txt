@@ -1,6 +1,6 @@
 Elggx Fivestar plugin for Elgg 1.8
-Latest Version: 1.8.2
-Released: 2012-06-09
+Latest Version: 1.8.3
+Released: 2013-03-09
 Contact: iionly@gmx.de
 License: GNU General Public License version 2
 Copyright: (c) iionly (for Elgg 1.8 version), Billy Gunn
@@ -16,6 +16,9 @@ Installation:
 2. Enable the plugin in the admin section of your site,
 3. Configure then the plugin settings (section "Administer" - "Utilities" - "Elggx Fivestar"). At least it's necessary to add the rating widget to some views for the Elggx Fivestar plugin being useable. Via the plugin settings you can add the rating widget to some pre-defined default views. In the following is described in detail how the configuration of the rating widget for more views works in detail.
 
+
+
+How to customize it:
 
 To include the rating widget on your site after enabling the Elggx Fivestar plugin for the first time (or after upgrading from a version of Elggx Fivestar < 1.8.0) you need to set the default views on Elggx Fivestar's plugin settings page in the admin section of your site ("Administer" - "Utilities" - "Elggx Fivestar"). Click on "Set / Reset default views" and save the settings. There are already some default views defined in start.php where the rating widget will be included on your site, for example on blogs, pages and group discussions.
 
@@ -56,6 +59,13 @@ In this case the default css layout of the voting widget is used. Still, you mus
 
 
 Changelog:
+
+1.8.3:
+
+- Some general code cleanup,
+- Update of simple_html_dom library to latest version,
+- Updated the default views (to use them you need to Set/Reset the default views in the Elggx Fivestar plugin configuration in the section "Administer" - "Utilities" - "Elggx Fivestar").
+
 
 1.8.2:
 

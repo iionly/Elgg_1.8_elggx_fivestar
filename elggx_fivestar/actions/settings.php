@@ -5,17 +5,12 @@
  *
  */
 
-global $CONFIG;
-
-gatekeeper();
-action_gatekeeper();
-
 // Params array (text boxes and drop downs)
 $params = get_input('params');
 foreach ($params as $k => $v) {
     if (!elgg_set_plugin_setting($k, $v, 'elggx_fivestar')) {
         register_error(sprintf(elgg_echo('plugins:settings:save:fail'), 'elggx_fivestar'));
-        forward($_SERVER['HTTP_REFERER']);
+        forward(REFERER);
     }
 }
 
@@ -40,4 +35,4 @@ elgg_set_plugin_setting('elggx_fivestar_view', $elggx_fivestar_view, 'elggx_five
 
 system_message(elgg_echo('elggx_fivestar:settings:save:ok'));
 
-forward($_SERVER['HTTP_REFERER']);
+forward(REFERER);

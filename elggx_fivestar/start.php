@@ -4,6 +4,8 @@ if (!function_exists('str_get_html')) {
     include dirname(__FILE__) . "/lib/simple_html_dom.php";
 }
 
+elgg_register_event_handler('init','system','elggx_fivestar_init');
+
 function elggx_fivestar_init() {
 
     elggx_fivestar_settings();
@@ -18,25 +20,11 @@ function elggx_fivestar_init() {
 
     elgg_register_admin_menu_item('administer', 'elggx_fivestar', 'administer_utilities');
 
-    // Upgrade settings
-    $oldversion = elgg_get_plugin_setting('version', 'elggx_fivestar');
-    // Check if we need to run an upgrade
-    if (!$oldversion) {
-        $plugin = elgg_get_plugin_from_id('elggx_fivestar');
-        // Old versions of Elggx Fivestar used an array named view to save the Fivestar views which
-        // results in an issue with the plugin to be shown in the plugin list in the admin section.
-        // New name is elggx_fivestar_view and the old array needs to get deleted from the database.
-        $view = $plugin->view;
-        if (is_string($view)) {
-            $plugin->__unset('view');
-            $plugin->save();
-        }
-        // Set new version
-        elgg_set_plugin_setting('version', '1.8.1', 'elggx_userpoints');
-    } else if ($oldversion != '1.8.1') {
-        // Set new version
-        elgg_set_plugin_setting('version', '1.8.1', 'elggx_userpoints');
-    }
+    // Register actions
+    $base_dir = elgg_get_plugins_path() . 'elggx_fivestar/actions';
+    elgg_register_action("elggx_fivestar/rate", "$base_dir/rate.php", 'logged_in');
+    elgg_register_action("elggx_fivestar/settings", "$base_dir/settings.php", 'admin');
+    elgg_register_action("elggx_fivestar/reset", "$base_dir/reset.php", 'admin');
 }
 
 /**
@@ -51,8 +39,6 @@ function elggx_fivestar_init() {
  * @return string   The html
  */
 function elggx_fivestar_view($hook, $entity_type, $returnvalue, $params) {
-
-    global $is_admin;
 
     $lines = explode("\n", elgg_get_plugin_setting('elggx_fivestar_view'));
     foreach ($lines as $line) {
@@ -125,13 +111,12 @@ function elggx_fivestar_vote($guid, $vote) {
  */
 function elggx_fivestar_setRating($entity) {
 
-    elggx_fivestar_su();
+    $access = elgg_set_ignore_access(true);
 
     $rating = elggx_fivestar_getRating($entity->guid);
-
     $entity->elggx_fivestar_rating = $rating['rating'];
 
-    elggx_fivestar_su(true);
+    elgg_set_ignore_access($access);
 
     return;
 }
@@ -147,9 +132,9 @@ function elggx_fivestar_getRating($guid) {
     $rating = array('rating' => 0, 'votes' => 0);
     $entity = get_entity($guid);
 
-    if (count($entity->getAnnotations('fivestar', 9999))) {
+    if (count($entity->getAnnotations('fivestar', false))) {
         $rating['rating'] = $entity->getAnnotationsAvg('fivestar');
-        $rating['votes'] = count($entity->getAnnotations('fivestar', 9999));
+        $rating['votes'] = count($entity->getAnnotations('fivestar', false));
 
         $modifier = 100 / (int)elgg_get_plugin_setting('stars');
         $rating['rating'] = round($rating['rating'] / $modifier, 1);
@@ -174,7 +159,11 @@ function elggx_fivestar_widget($returnvalue, $params, $options) {
         return;
     }
 
-    $widget = elgg_view("elggx_fivestar/voting", array('fivestar_guid' => $guid));
+    if (elgg_in_context('widgets')) {
+        $widget = elgg_view("elggx_fivestar/voting", array('fivestar_guid' => $guid, 'min' => true));
+    } else {
+        $widget = elgg_view("elggx_fivestar/voting", array('fivestar_guid' => $guid));
+    }
 
     // get the DOM
     $html = str_get_html($returnvalue);
@@ -217,38 +206,14 @@ function elggx_fivestar_hasVoted($guid) {
 }
 
 /**
- * Elevate user to admin.
- *
- * @param  bool $unsu  Return to original permissions
- * @return bool  is_admin true/false
- */
-function elggx_fivestar_su($unsu=false) {
-    global $is_admin;
-    static $is_admin_orig = null;
-
-    if (is_null($is_admin_orig)) {
-        $is_admin_orig = $is_admin;
-    }
-
-    if ($unsu) {
-        return $is_admin = $is_admin_orig;
-    } else {
-        return $is_admin = true;
-    }
-}
-
-/**
  * Set default settings
  *
  */
 function elggx_fivestar_settings() {
-
     // Set plugin defaults
-
     if (!(int)elgg_get_plugin_setting('stars')) {
         elgg_set_plugin_setting('stars', '5');
     }
-
     $change_vote = (int)elgg_get_plugin_setting('change_vote');
     if ($change_vote == 0) {
         elgg_set_plugin_setting('change_cancel', 0);
@@ -259,18 +224,16 @@ function elggx_fivestar_settings() {
 
 function elggx_fivestar_defaults() {
 
-$elggx_fivestar_view = 'elggx_fivestar_view=object/blog, tag=div, attribute=class, attribute_value=elgg-content, before_html=<br />
-elggx_fivestar_view=object/file, tag=div, attribute=class, attribute_value=elgg-content, before_html=<br />
-elggx_fivestar_view=object/page_top, tag=div, attribute=class, attribute_value=elgg-content, before_html=<br />
-elggx_fivestar_view=object/groupforumtopic, tag=div, attribute=class, attribute_value=elgg-content, before_html=<br />
-elggx_fivestar_view=object/groupforumtopic, tag=div, attribute=class, attribute_value=elgg-output, before_html=<br />
-elggx_fivestar_view=object/image, tag=div, attribute=class, attribute_value=elgg-output mbl, before_html=<br />
-elggx_fivestar_view=object/bookmarks, tag=div, attribute=class, attribute_value=elgg-content, before_html=<br />';
+$elggx_fivestar_view = 'elggx_fivestar_view=object/blog, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />
+elggx_fivestar_view=object/file, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />
+elggx_fivestar_view=object/bookmarks, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />
+elggx_fivestar_view=object/page_top, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />
+elggx_fivestar_view=object/thewire, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />
+elggx_fivestar_view=group/default, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br>
+elggx_fivestar_view=object/groupforumtopic, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />
+elggx_fivestar_view=icon/user/default, tag=div, attribute=class, attribute_value=elgg-avatar elgg-avatar-large, before_html=<br>
+elggx_fivestar_view=object/album, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />
+elggx_fivestar_view=object/image, tag=div, attribute=class, attribute_value=elgg-subtext, before_html=<br />';
 
 elgg_set_plugin_setting('elggx_fivestar_view', $elggx_fivestar_view);
 }
-
-elgg_register_event_handler('init','system','elggx_fivestar_init');
-elgg_register_action("elggx_fivestar/rate", $CONFIG->pluginspath . "elggx_fivestar/actions/rate.php", 'logged_in');
-elgg_register_action("elggx_fivestar/settings", $CONFIG->pluginspath . "elggx_fivestar/actions/settings.php", 'admin');
-elgg_register_action("elggx_fivestar/reset", $CONFIG->pluginspath . "elggx_fivestar/actions/reset.php", 'admin');

@@ -111,7 +111,7 @@ $form .= "<br><br>";
 $form .= '<br /><h4>'.elgg_echo('elggx_fivestar:settings:view_heading').':</h4><br />';
 $form .= "<p><b>";
 $form .= elgg_view("output/confirmlink", array(
-                   'href' => $vars['url'] . "action/elggx_fivestar/reset?&__elgg_token=$token&__elgg_ts=$ts",
+                   'href' => elgg_get_site_url() . "action/elggx_fivestar/reset?&__elgg_token=$token&__elgg_ts=$ts",
                    'text' => elgg_echo('elggx_fivestar:settings:defaults'),
                    'confirm' => elgg_echo('elggx_fivestar:settings:defaults:confirm')));
 $form .= "</b></p><br />";
@@ -147,6 +147,6 @@ $form .= '<p><a onmouseover="this.style.cursor=\'pointer\';" onClick="addFormFie
 
 $form .= "<br><br>" . elgg_view('input/submit', array('value' => elgg_echo("save")));
 
-$action = $vars['url'] . 'action/elggx_fivestar/settings';
+$action = elgg_get_site_url() . 'action/elggx_fivestar/settings';
 
 echo elgg_view('input/form', array('action' => $action, 'body' => $form));
