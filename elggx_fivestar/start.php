@@ -10,10 +10,12 @@ function elggx_fivestar_init() {
 
     elggx_fivestar_settings();
 
-    $css_url = elgg_get_simplecache_url('css', 'basic');
-    elgg_register_css('fivestar_css', $css_url);
+    $css_rating = elgg_get_simplecache_url('css', 'basic');
+    elgg_register_simplecache_view('css/basic');
+    elgg_register_css('fivestar_css', $css_rating);
 
-    $js_rating = elgg_get_config('url') . "mod/elggx_fivestar/views/default/js/ui.stars.min.js";
+    $js_rating = elgg_get_simplecache_url('js', 'elggx_fivestar/ui.stars.min');
+    elgg_register_simplecache_view('js/elggx_fivestar/ui.stars.min');
     elgg_register_js('fivestar', $js_rating);
 
     elgg_register_plugin_hook_handler('view', 'all', 'elggx_fivestar_view');
