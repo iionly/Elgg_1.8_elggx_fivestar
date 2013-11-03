@@ -1,6 +1,6 @@
 <script type="text/javascript">
     function fivestar(id, token, ts) {
-        $("#fivestar-form-"+id).children().not("select").hide();
+        $("#fivestar-form-"+id).find('input[type=submit]').hide();
 
         // Create stars for: Rate this
         $("#fivestar-form-"+id).stars({

@@ -1,6 +1,6 @@
 Elggx Fivestar plugin for Elgg 1.8
-Latest Version: 1.8.5
-Released: 2013-06-01
+Latest Version: 1.8.6
+Released: 2013-11-03
 Contact: iionly@gmx.de
 License: GNU General Public License version 2
 Copyright: (c) iionly (for Elgg 1.8 version), Billy Gunn
@@ -60,6 +60,12 @@ In this case the default css layout of the voting widget is used. Still, you mus
 
 
 Changelog:
+
+1.8.6:
+
+- Fixed error in activate.php,
+- Updated simple_html_dom.php library.
+
 
 1.8.5:
 

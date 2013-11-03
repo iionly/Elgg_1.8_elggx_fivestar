@@ -18,8 +18,8 @@ if (!$oldversion) {
         $plugin->save();
     }
     // Set new version
-    elgg_set_plugin_setting('version', '1.8.5', 'elggx_userpoints');
-} else if ($oldversion != '1.8.5') {
+    elgg_set_plugin_setting('version', '1.8.6', 'elggx_fivestar');
+} else if ($oldversion != '1.8.6') {
     // Set new version
-    elgg_set_plugin_setting('version', '1.8.5', 'elggx_userpoints');
+    elgg_set_plugin_setting('version', '1.8.6', 'elggx_fivestar');
 }
